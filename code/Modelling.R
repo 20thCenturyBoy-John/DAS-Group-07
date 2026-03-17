@@ -4,7 +4,7 @@ library(knitr)
 library(tidyverse)
 
 # read the data set
-film <- read.csv("data/Group_07_data_1.csv") %>%
+film <- read.csv("data/Group_07_Data_1.csv") %>%
   as_tibble()
 
 # select models by removing insignificant variables from full model
