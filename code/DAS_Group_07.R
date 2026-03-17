@@ -53,18 +53,18 @@ nrow(df_clean)
 df_clean <- df_clean %>%
   mutate(
     decade = case_when(
-      
-      year >= 1900 & year < 1910 ~ "1900S",
-      year >= 1910 & year < 1920 ~ "1910S",
-      year >= 1920 & year < 1930 ~ "1920S",
-      year >= 1930 & year < 1940 ~ "1930S",
-      year >= 1940 & year < 1950 ~ "1940S",
-      year >= 1950 & year < 1960 ~ "1950S",
-      year >= 1960 & year < 1970 ~ "1960S",
-      year >= 1970 & year < 1980 ~ "1970S",
-      year >= 1980 & year < 1990 ~ "1980S",
-      year >= 1990 & year < 2000 ~ "1990S",
-      year >= 2000 & year < 2010 ~ "2000S",
+      year >= 1890 & year < 1900 ~ "1890s",
+      year >= 1900 & year < 1910 ~ "1900s",
+      year >= 1910 & year < 1920 ~ "1910s",
+      year >= 1920 & year < 1930 ~ "1920s",
+      year >= 1930 & year < 1940 ~ "1930s",
+      year >= 1940 & year < 1950 ~ "1940s",
+      year >= 1950 & year < 1960 ~ "1950s",
+      year >= 1960 & year < 1970 ~ "1960s",
+      year >= 1970 & year < 1980 ~ "1970s",
+      year >= 1980 & year < 1990 ~ "1980s",
+      year >= 1990 & year < 2000 ~ "1990s",
+      year >= 2000 & year < 2010 ~ "2000s",
       TRUE ~ "Other"
     ),
     decade = factor(decade)  # Convert to factor for GLM
