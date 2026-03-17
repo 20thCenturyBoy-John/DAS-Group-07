@@ -4,7 +4,7 @@ library(reshape2)
 library(polycor)
 library(GGally)
 
-# Check the workspace
+# Check the workspace, workspace should be: Github/DAS-Group-07
 getwd()
 
 # Read dataset
@@ -72,12 +72,12 @@ df_clean <- df_clean %>%
 
 
 # Create log_votes
-df_clean <- df_clean %>% mutate(ln_votes = log10(votes))
+df_clean <- df_clean %>% mutate(ln_votes = log(votes))
 
 ##Export clean dataset
 # Reorder columns to the specified sequence
 df_clean <- df_clean %>% select(film_id, rating, high_rating, length, budget, votes, ln_votes, year, decade, genre)
-write.csv(df_clean, file = "D:/Github/DAS-Group-07/data/Group_07_Data_1.csv", row.names = FALSE)
+write.csv(df_clean, file = "data/Group_07_Data_1.csv", row.names = FALSE)
 
 ## Generate cleaning report
 cat("Original dataset rows: ", nrow(df), "\n")
