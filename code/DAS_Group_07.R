@@ -8,7 +8,7 @@ library(GGally)
 getwd()
 
 # Read dataset
-df <- read.csv("data/dataset07.csv")
+df <- read.csv("Data/dataset07.csv")
 ## Initial data inspection
 glimpse(df)  # Check variable types and first few rows
 summary(df)  # Check descriptive statistics
