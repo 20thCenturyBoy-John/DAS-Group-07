@@ -53,6 +53,7 @@ nrow(df_clean)
 df_clean <- df_clean %>%
   mutate(
     decade = case_when(
+      
       year >= 1900 & year < 1910 ~ "1900S",
       year >= 1910 & year < 1920 ~ "1910S",
       year >= 1920 & year < 1930 ~ "1920S",
@@ -74,6 +75,8 @@ df_clean <- df_clean %>%
 df_clean <- df_clean %>% mutate(ln_votes = log10(votes))
 
 ##Export clean dataset
+# Reorder columns to the specified sequence
+df_clean <- df_clean %>% select(film_id, rating, high_rating, length, budget, votes, ln_votes, year, decade, genre)
 write.csv(df_clean, file = "D:/Github/DAS-Group-07/data/Group_07_Data_1.csv", row.names = FALSE)
 
 ## Generate cleaning report
