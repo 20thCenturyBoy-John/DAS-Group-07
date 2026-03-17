@@ -8,7 +8,7 @@ library(GGally)
 getwd()
 
 # Read dataset
-df <- read.csv("data/dataset07.csv")
+df <- read.csv("Data/dataset07.csv")
 ## Initial data inspection
 glimpse(df)  # Check variable types and first few rows
 summary(df)  # Check descriptive statistics
@@ -72,7 +72,7 @@ df_clean <- df_clean %>%
 
 
 # Create log_votes
-df_clean <- df_clean %>% mutate(ln_votes = log10(votes))
+df_clean <- df_clean %>% mutate(ln_votes = log(votes))
 
 ##Export clean dataset
 # Reorder columns to the specified sequence
