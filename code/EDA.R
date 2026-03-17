@@ -8,7 +8,9 @@ library(GGally)
 getwd()
 
 # Read dataset
-df <- read.csv("Data/dataset07.csv")
+df <- read.csv("data/dataset07.csv")
+df<- as.tibble(df)
+
 ## Initial data inspection
 glimpse(df)  # Check variable types and first few rows
 summary(df)  # Check descriptive statistics
@@ -141,7 +143,7 @@ ggplot(genre_rating, aes(x = genre, y = percentage, fill = high_rating)) +
   scale_fill_manual(values = c("lightcoral", "lightgreen"), labels = c("No", "Yes"))
 ggsave("plots/genre_vs_rating.png", width = 10, height = 5)
 
-cor_data <- df_clean %>%
+cor_data <- as.data.frame(df_clean) %>%
   select(length, budget, ln_votes, decade, rating, genre)
 
 # Compute correlation matrix for mixed data types
