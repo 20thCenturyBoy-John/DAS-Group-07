@@ -4,7 +4,7 @@ library(knitr)
 library(tidyverse)
 
 # read the data set
-film <- read.csv("Data/Group_07_Data_1.csv") %>%
+film <- read.csv("data/Group_07_Data_1.csv") %>%
   as_tibble()
 
 # select models by removing insignificant variables from full model
@@ -28,7 +28,7 @@ final.model <- model4
 film <- film %>%
   mutate(high_rating_probability=predict(final.model,type="response")) %>%
   select(film_id,rating,high_rating,high_rating_probability,everything())
-write_csv(film,"Data/Group_07_Data_2.csv")
+write_csv(film,"data/Group_07_Data_2.csv")
 
 # generate prediction value graph
 ggplot(film,aes(x=high_rating_probability,y=high_rating))+
