@@ -1,6 +1,7 @@
 library(broom)
 library(ggplot2)
 library(knitr)
+library(pROC)
 library(tidyverse)
 
 # read the data set
@@ -24,16 +25,24 @@ bind_rows(glance(model1),glance(model2),glance(model3),glance(model4),.id="Model
   kable(digits=2,caption="Model comparison values for different models")
 final.model <- model4
 
-# add predictions to the data set
+# add predictions into the data set
 film <- film %>%
   mutate(high_rating_probability=predict(final.model,type="response")) %>%
-  select(film_id,rating,high_rating,high_rating_probability,everything())
+  select(film_id:high_rating,high_rating_probability,everything())
 write_csv(film,"data/Group_07_Data_2.csv")
 
-# generate prediction value graph
+# generate true value vs predicted probability graph
 ggplot(film,aes(x=high_rating_probability,y=high_rating))+
   geom_point(shape=3,color="black",size=10)+
-  labs(x="High Rating Prediction Probability",
-       y="True High Rating Value",
-       title="True High Rating Value vs High Rating Prediction Probability by Using the Point Shape \"+\"")
-ggsave("plots/True Value vs Predictions.png")
+  labs(x="Predicted Probability of High Rating ",
+       y="True Value of High Rating",
+       title="True Value vs Predicted Probability (using \"+\" as point shape)")
+ggsave("plots/True Value vs Predicted Probability.png")
+
+# generate ROC curve
+ROC <- roc(film$high_rating=="Yes",film$high_rating_probability)
+ggroc(ROC,color="black")+
+  xlab("False Positive Rate")+
+  ylab("True Positive Rate")+
+  ggtitle(paste("Area under the ROC Curve =",round(auc(ROC),3)))
+ggsave("plots/ROC Curve.png")
