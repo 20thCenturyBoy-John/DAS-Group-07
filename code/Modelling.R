@@ -36,4 +36,4 @@ ggplot(film,aes(x=high_rating_probability,y=high_rating))+
   labs(x="High Rating Prediction Probability",
        y="True High Rating Value",
        title="True High Rating Value vs High Rating Prediction Probability by Using the Point Shape \"+\"")
-ggsave("plots/Predictions vs True Value.png")
+ggsave("plots/True Value vs Predictions.png")
