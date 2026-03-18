@@ -21,19 +21,53 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="report_files/libs/clipboard/clipboard.min.js"></script>
-<script src="report_files/libs/quarto-html/quarto.js"></script>
-<script src="report_files/libs/quarto-html/popper.min.js"></script>
-<script src="report_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="report_files/libs/quarto-html/anchor.min.js"></script>
-<link href="report_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="report_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="report_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="report_files/libs/bootstrap/bootstrap-32038c8e0a9a0d86d25d6a975d417f1a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="Group_07_Analysis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Group_07_Analysis_files/libs/quarto-html/quarto.js"></script>
+<script src="Group_07_Analysis_files/libs/quarto-html/popper.min.js"></script>
+<script src="Group_07_Analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Group_07_Analysis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Group_07_Analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Group_07_Analysis_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Group_07_Analysis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Group_07_Analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Group_07_Analysis_files/libs/bootstrap/bootstrap-32038c8e0a9a0d86d25d6a975d417f1a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <style>html{ scroll-behavior: smooth; }</style>
 
 
@@ -58,10 +92,12 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#budget-vs-rating" id="toc-budget-vs-rating" class="nav-link" data-scroll-target="#budget-vs-rating"><span class="header-section-number">3.4</span> Budget vs Rating</a></li>
   <li><a href="#genre-vs-high-rating" id="toc-genre-vs-high-rating" class="nav-link" data-scroll-target="#genre-vs-high-rating"><span class="header-section-number">3.5</span> Genre vs High Rating</a></li>
   <li><a href="#correlation-heatmap" id="toc-correlation-heatmap" class="nav-link" data-scroll-target="#correlation-heatmap"><span class="header-section-number">3.6</span> Correlation Heatmap</a></li>
-  <li><a href="#pairwise-relationships" id="toc-pairwise-relationships" class="nav-link" data-scroll-target="#pairwise-relationships"><span class="header-section-number">3.7</span> Pairwise Relationships</a></li>
   </ul></li>
   <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods"><span class="header-section-number">4</span> Methods</a></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">5</span> Results</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">5</span> Results</a>
+  <ul class="collapse">
+  <li><a href="#prediction-probability-vs-true-value" id="toc-prediction-probability-vs-true-value" class="nav-link" data-scroll-target="#prediction-probability-vs-true-value"><span class="header-section-number">5.1</span> Prediction Probability vs True Value</a></li>
+  </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">6</span> Conclusion</a></li>
   </ul>
 </nav>
@@ -94,6 +130,13 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the packages required for data handling, visualisation, and modelling</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
 <p>This report presents the group analysis of factors influencing IMDb film ratings using Generalised Linear Models (GLMs). The main objective of the project is to identify which film properties, including length, budget, votes, genre, and release year, are associated with whether a film receives an IMDb rating greater than 7.</p>
@@ -101,13 +144,69 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="data" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Data</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the original dataset from the data folder</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"Data/dataset07.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the dimensions of the original dataset</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2387    7</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the binary target variable and remove rows with missing values</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df_clean <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">high_rating =</span> <span class="fu">ifelse</span>(rating <span class="sc">&gt;</span> <span class="dv">7</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(length), <span class="sc">!</span><span class="fu">is.na</span>(budget))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove invalid or extreme observations based on the cleaning rules</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>df_clean <span class="ot">&lt;-</span> df_clean <span class="sc">%&gt;%</span> </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    length <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> length <span class="sc">&lt;</span> <span class="dv">300</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    budget <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> budget <span class="sc">&lt;</span> <span class="dv">50</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    votes <span class="sc">&gt;=</span> <span class="dv">0</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    rating <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">&amp;</span> rating <span class="sc">&lt;=</span> <span class="dv">10</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">duplicated</span>(film_id)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the dimensions of the cleaned dataset</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(df_clean) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2292    8</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Count missing values in key variables</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(df[, <span class="fu">c</span>(<span class="st">"length"</span>, <span class="st">"budget"</span>, <span class="st">"votes"</span>, <span class="st">"rating"</span>, <span class="st">"genre"</span>)]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>length budget  votes rating  genre 
+    92      0      0      0      0 </code></pre>
+</div>
+</div>
 <p>This project uses a subset of the IMDb film database (<code>dataset07.csv</code>) to investigate which film characteristics are associated with receiving a high IMDb rating. In this analysis, a high rating is defined as an IMDb score above 7 and is treated as a binary target variable (<code>high_rating</code>).</p>
-<p>The main variables used in the analysis include release year (<code>year</code>), film duration in minutes (<code>length</code>), production budget in million USD (<code>budget</code>), number of votes (<code>votes</code>), genre (<code>genre</code>), and IMDb rating (<code>rating</code>). During data preparation, rows with missing values in the key variables were removed, obvious outliers were filtered out, categorical variables were converted to factor type, and a log-transformed votes variable was created for modelling.</p>
+<p>The main variables used in the analysis include release year (<code>year</code>), film duration in minutes (<code>length</code>), production budget in million USD (<code>budget</code>), number of votes (<code>votes</code>), genre (<code>genre</code>), and IMDb rating (<code>rating</code>). During data preparation, observations that did not satisfy the cleaning rules were removed, including records with missing values and invalid or extreme values.</p>
 </section>
 <section id="exploratory-data-analysis" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Exploratory Data Analysis</h1>
-<p>The exploratory data analysis (EDA) was conducted to examine the distribution of the target variable and the relationships between predictors and film ratings. According to the project workflow, this stage included univariate analysis of the target variable, numerical predictors, and genre, bivariate analysis between predictors and <code>high_rating</code>, and correlation analysis among numerical variables.</p>
-<p>The main visual outputs include the distribution of the target variable, the distribution of film genre, scatter plots of length and budget against rating, a genre-based comparison of high-rating percentages, a correlation heatmap, and a ggpairs plot of key variables.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the dimensions of the original and cleaned datasets</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2387    7</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(df_clean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2292    8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the number of observations removed during data cleaning</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(df) <span class="sc">-</span> <span class="fu">nrow</span>(df_clean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 95</code></pre>
+</div>
+</div>
+<p>The exploratory data analysis was conducted to summarize the cleaned dataset and identify preliminary relationships between predictors and IMDb rating outcomes. The original dataset contained 2,387 observations, and the final cleaned dataset used for analysis contained 2,292 observations. This means that 95 observations were removed during data preparation after applying the cleaning rules.</p>
+<p>The cleaned dataset contained the main variables used in later analysis, including release year, film length, production budget, number of votes, genre, and IMDb rating. A binary target variable, <code>high_rating</code>, was defined according to whether the IMDb score exceeded 7.</p>
 <section id="target-variable-distribution" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="target-variable-distribution"><span class="header-section-number">3.1</span> Target Variable Distribution</h2>
 <p><img src="plots/target_distribution.png" class="img-fluid" style="width:85.0%" data-fig-cap="Distribution of the target variable."></p>
@@ -132,13 +231,58 @@ ul.task-list li input[type="checkbox"] {
 <h2 data-number="3.6" class="anchored" data-anchor-id="correlation-heatmap"><span class="header-section-number">3.6</span> Correlation Heatmap</h2>
 <p><img src="plots/correlation_heatmap.png" class="img-fluid" style="width:85.0%" data-fig-cap="Correlation heatmap of key variables."></p>
 </section>
-<section id="pairwise-relationships" class="level2" data-number="3.7">
-<h2 data-number="3.7" class="anchored" data-anchor-id="pairwise-relationships"><span class="header-section-number">3.7</span> Pairwise Relationships</h2>
-<p><img src="plots/ggpairs_correlation.png" class="img-fluid" style="width:100.0%" data-fig-cap="Pairwise relationships between key variables."></p>
-</section>
 </section>
 <section id="methods" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Methods</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the cleaned data for modelling</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>film <span class="ot">&lt;-</span> df_clean <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">high_rating =</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(high_rating <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span>)),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">genre =</span> <span class="fu">factor</span>(genre)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the final logistic regression model</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>final.model <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  high_rating <span class="sc">==</span> <span class="st">"Yes"</span> <span class="sc">~</span> length <span class="sc">+</span> length<span class="sc">:</span>budget <span class="sc">+</span> <span class="fu">log</span>(votes) <span class="sc">+</span> genre,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> film</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the summary of the final model</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(final.model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = high_rating == "Yes" ~ length + length:budget + 
+    log(votes) + genre, family = binomial(link = "logit"), data = film)
+
+Coefficients:
+                   Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)        2.375767   0.336507   7.060 1.66e-12 ***
+length            -0.141716   0.007966 -17.789  &lt; 2e-16 ***
+log(votes)         0.149874   0.044322   3.381 0.000721 ***
+genreAnimation    -1.018659   0.359123  -2.837 0.004561 ** 
+genreComedy        2.929602   0.200801  14.590  &lt; 2e-16 ***
+genreDocumentary   5.106299   0.425766  11.993  &lt; 2e-16 ***
+genreDrama        -2.063818   0.254425  -8.112 4.99e-16 ***
+genreRomance     -14.901934 485.558028  -0.031 0.975517    
+genreShort         3.190056   1.042699   3.059 0.002218 ** 
+length:budget      0.006724   0.000423  15.894  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 2979.8  on 2291  degrees of freedom
+Residual deviance: 1224.5  on 2282  degrees of freedom
+AIC: 1244.5
+
+Number of Fisher Scoring iterations: 15</code></pre>
+</div>
+</div>
 <p>The modelling stage used Generalised Linear Models (GLMs) with a binomial family and logit link to examine the probability that a film receives a high IMDb rating. In this project, the response variable was <code>high_rating</code>, where films with a rating above 7 were coded as “Yes” and the others as “No”.</p>
 <p>Several candidate models were fitted and compared by progressively removing or adjusting predictors from the full model. The predictors considered in the modelling process included film length, budget, log-transformed votes, decade, and genre. Based on model comparison, the final model selected was Model 4, which included <code>length</code>, the interaction term <code>length:budget</code>, <code>log(votes)</code>, and <code>genre</code>.</p>
 </section>
@@ -147,6 +291,11 @@ ul.task-list li input[type="checkbox"] {
 <p>The final selected model was Model 4. According to the model summary, several predictors were statistically significant. Film length had a significant negative coefficient, suggesting that longer films were associated with a lower probability of receiving a high IMDb rating when other variables were held constant. In contrast, log-transformed votes had a significant positive coefficient, indicating that films with more votes were more likely to be highly rated.</p>
 <p>Genre also showed important differences in predicted high-rating probability. Compared with the reference genre, Animation, Comedy, Documentary, Drama, and Short had significant effects, while Romance was not statistically significant. In addition, the interaction term between length and budget was significant, suggesting that the relationship between film length and high rating may vary depending on production budget.</p>
 <p>The final model had an AIC value of 1244.5, with residual deviance substantially lower than the null deviance, indicating improved model fit compared with the intercept-only model.</p>
+<section id="prediction-probability-vs-true-value" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="prediction-probability-vs-true-value"><span class="header-section-number">5.1</span> Prediction Probability vs True Value</h2>
+<p><img src="plots/Predictions_vs_True_Value.png" class="img-fluid" style="width:85.0%" data-fig-cap="Predicted probability of high rating against the observed outcome."></p>
+<p>The prediction plot shows that the fitted model assigned higher predicted probabilities to many films in the high-rating group, suggesting that the model was able to distinguish between the two classes to some extent.</p>
+</section>
 </section>
 <section id="conclusion" class="level1" data-number="6">
 <h1 data-number="6"><span class="header-section-number">6</span> Conclusion</h1>
@@ -578,5 +727,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<script src="report_files/libs/quarto-html/zenscroll-min.js"></script>
+<script src="Group_07_Analysis_files/libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
