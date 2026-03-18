@@ -10,6 +10,7 @@ format:
     number-sections: true
     toc-location: right
     smooth-scroll: true
+    css: styles.css
 editor: visual
 ---
 

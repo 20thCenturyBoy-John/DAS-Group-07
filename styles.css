@@ -1,0 +1,49 @@
+body {
+  font-size: 20px;
+  line-height: 1.9;
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+figure {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+figcaption {
+  font-size: 1em;
+  color: #555;
+  text-align: center;
+  font-style: italic;
+  margin-top: 0.4rem;
+}
+
+.sidebar nav[role="doc-toc"] {
+  font-size: 0.95em;
+}
+.page-columns {
+  grid-template-columns: minmax(0, 1fr) 300px;
+}
+
+.page-columns .content {
+  max-width: 1000px;
+}
+h1 {
+  font-size: 2.4rem;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-top: 2.2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+}
