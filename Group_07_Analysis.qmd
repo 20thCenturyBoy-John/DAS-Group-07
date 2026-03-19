@@ -32,7 +32,7 @@ The analysis is based on a subset of the IMDb film database (\`dataset07.csv\`) 
 # Data
 ```{r data-load}
 # Load the original dataset from the data folder
-df <- read.csv("Data/dataset07.csv")
+df <- read.csv("data/dataset07.csv")
 
 # Show the dimensions of the original dataset
 dim(df)
