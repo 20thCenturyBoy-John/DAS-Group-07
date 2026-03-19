@@ -26,6 +26,16 @@ bind_rows(glance(model1),glance(model2),glance(model3),glance(model4),.id="Model
   kable(digits=2,caption="Model comparison values for different models")
 final.model <- model4
 
+# Coefficient significance
+tidy(final.model) %>%
+  mutate(significance = case_when(
+    p.value < 0.001 ~ "***",
+    p.value < 0.01  ~ "**",
+    p.value < 0.05  ~ "*",
+    TRUE ~ ""
+  )) %>%
+  kable(digits = 3, caption = "Coefficient Significance of Final Model")
+
 # add predictions into the data set
 film <- film %>%
   mutate(high_rating_probability=predict(final.model,type="response")) %>%
