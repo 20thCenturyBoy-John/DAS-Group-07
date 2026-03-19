@@ -4,7 +4,8 @@ subtitle: "IMDb Film Rating Analysis"
 author: "DAS Group 07"
 format:
   html:
-    output-file: Group_07_qmd.html
+    embed-resources: true
+    output-file: Group_07_Analysis_qmd.html
     theme: journal
     toc: true
     toc-depth: 2
@@ -30,6 +31,7 @@ This report presents the group analysis of factors influencing IMDb film ratings
 The analysis is based on a subset of the IMDb film database (\`dataset07.csv\`) and combines data cleaning, exploratory data analysis, and statistical modelling. The report is organised into sections covering the dataset, exploratory findings, modelling approach, key results, and final conclusions.
 
 # Data
+
 ```{r data-load}
 # Load the original dataset from the data folder
 df <- read.csv("Data/dataset07.csv")
@@ -57,15 +59,18 @@ df_clean <- df_clean %>%
 # Show the dimensions of the cleaned dataset
 dim(df_clean) 
 ```
+
 ```{r missing-summary}
 # Count missing values in key variables
 colSums(is.na(df[, c("length", "budget", "votes", "rating", "genre")]))
 ```
+
 This project uses a subset of the IMDb film database (`dataset07.csv`) to investigate which film characteristics are associated with receiving a high IMDb rating. In this analysis, a high rating is defined as an IMDb score above 7 and is treated as a binary target variable (`high_rating`).
 
 The main variables used in the analysis include release year (`year`), film duration in minutes (`length`), production budget in million USD (`budget`), number of votes (`votes`), genre (`genre`), and IMDb rating (`rating`). During data preparation, observations that did not satisfy the cleaning rules were removed, including records with missing values and invalid or extreme values.
 
 # Exploratory Data Analysis
+
 ```{r eda-summary}
 # Show the dimensions of the original and cleaned datasets
 dim(df)
@@ -81,30 +86,42 @@ The cleaned dataset contained the main variables used in later analysis, includi
 
 ## Target Variable Distribution
 
+The target variable distribution shows that films without a high IMDb rating outnumber those classified as highly rated. This indicates that the dataset is moderately imbalanced, with highly rated films forming the minority class.
+
 ![](plots/target_distribution.png){width="85%" fig-cap="Distribution of the target variable."}
 
 ## Genre Distribution
+
+The genre distribution is uneven across the dataset. Action and Drama appear most frequently, whereas Romance and Short have relatively few observations, suggesting that some genre-level comparisons should be interpreted with caution.
 
 ![](plots/genre_distribution.png){width="85%" fig-cap="Distribution of film genres in the cleaned dataset."}
 
 ## Length vs Rating
 
+The scatter plot suggests a negative relationship between film length and IMDb rating. Although the observations are dispersed, the downward trend line indicates that longer films tend to receive lower ratings on average.
+
 ![](plots/length_vs_rating_scatter.png){width="85%" fig-cap="Relationship between film length and IMDb rating."}
 
 ## Budget vs Rating
+
+The relationship between budget and rating appears to be weakly positive. Films with larger budgets are somewhat more likely to receive higher ratings, but the wide spread of points suggests that budget alone does not strongly determine rating outcomes.
 
 ![](plots/budget_vs_rating.png){width="85%" fig-cap="Relationship between production budget and IMDb rating."}
 
 ## Genre vs High Rating
 
+The proportion of highly rated films varies substantially by genre. Documentary and Short show relatively high percentages of high-rated films, while Action and Romance have lower proportions, indicating that genre may be an important predictor of rating outcomes.
+
 ![](plots/genre_vs_rating.png){width="85%" fig-cap="High-rating percentage across film genres."}
 
 ## Correlation Heatmap
 
+The correlation heatmap shows that most pairwise relationships among the numerical variables are weak to moderate. The strongest visible pattern is the negative association between length and rating, while votes show a positive association with rating, suggesting that severe multicollinearity is unlikely to be a major issue.
+
 ![](plots/correlation_heatmap.png){width="85%" fig-cap="Correlation heatmap of key variables."}
 
-
 # Methods
+
 ```{r model-data}
 # Prepare the cleaned data for modelling
 film <- df_clean %>%
@@ -112,7 +129,6 @@ film <- df_clean %>%
     high_rating = factor(ifelse(high_rating == 1, "Yes", "No")),
     genre = factor(genre)
   )
-```{r final-model}
 # Fit the final logistic regression model
 final.model <- glm(
   high_rating == "Yes" ~ length + length:budget + log(votes) + genre,
@@ -120,6 +136,7 @@ final.model <- glm(
   data = film
 )
 ```
+
 ```{r model-summary}
 # Display the summary of the final model
 summary(final.model)
