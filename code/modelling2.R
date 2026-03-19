@@ -76,7 +76,7 @@ precision <- cm$byClass["Precision"]
 recall    <- cm$byClass["Recall"]
 f1        <- cm$byClass["F1"]
 
-# AUC ----
+# AUC
 auc_value <- auc(ROC)
 
 # Create summary table 
