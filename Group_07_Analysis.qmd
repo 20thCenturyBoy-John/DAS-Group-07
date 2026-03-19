@@ -1,0 +1,150 @@
+---
+title: "DAS-Group-07 Report"
+subtitle: "IMDb Film Rating Analysis"
+author: "DAS Group 07"
+format:
+  html:
+    output-file: Group_07_qmd.html
+    theme: journal
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    toc-location: right
+    smooth-scroll: true
+    css: styles.css
+editor: visual
+---
+
+```{r setup, message=FALSE, warning=FALSE}
+# Load the packages required for data handling, visualisation, and modelling
+library(tidyverse) 
+library(ggplot2)
+library(broom)
+library(knitr)
+```
+
+# Introduction
+
+This report presents the group analysis of factors influencing IMDb film ratings using Generalised Linear Models (GLMs). The main objective of the project is to identify which film properties, including length, budget, votes, genre, and release year, are associated with whether a film receives an IMDb rating greater than 7.
+
+The analysis is based on a subset of the IMDb film database (\`dataset07.csv\`) and combines data cleaning, exploratory data analysis, and statistical modelling. The report is organised into sections covering the dataset, exploratory findings, modelling approach, key results, and final conclusions.
+
+# Data
+```{r data-load}
+# Load the original dataset from the data folder
+df <- read.csv("Data/dataset07.csv")
+
+# Show the dimensions of the original dataset
+dim(df)
+```
+
+```{r data-cleaning}
+# Create the binary target variable and remove rows with missing values
+df_clean <- df %>%
+  mutate(high_rating = ifelse(rating > 7, 1, 0)) %>%
+  filter(!is.na(length), !is.na(budget))
+
+# Remove invalid or extreme observations based on the cleaning rules
+df_clean <- df_clean %>% 
+  filter(
+    length > 0 & length < 300,
+    budget > 0 & budget < 50,
+    votes >= 0,
+    rating >= 0 & rating <= 10,
+    !duplicated(film_id)
+  )
+
+# Show the dimensions of the cleaned dataset
+dim(df_clean) 
+```
+```{r missing-summary}
+# Count missing values in key variables
+colSums(is.na(df[, c("length", "budget", "votes", "rating", "genre")]))
+```
+This project uses a subset of the IMDb film database (`dataset07.csv`) to investigate which film characteristics are associated with receiving a high IMDb rating. In this analysis, a high rating is defined as an IMDb score above 7 and is treated as a binary target variable (`high_rating`).
+
+The main variables used in the analysis include release year (`year`), film duration in minutes (`length`), production budget in million USD (`budget`), number of votes (`votes`), genre (`genre`), and IMDb rating (`rating`). During data preparation, observations that did not satisfy the cleaning rules were removed, including records with missing values and invalid or extreme values.
+
+# Exploratory Data Analysis
+```{r eda-summary}
+# Show the dimensions of the original and cleaned datasets
+dim(df)
+dim(df_clean)
+
+# Calculate the number of observations removed during data cleaning
+nrow(df) - nrow(df_clean)
+```
+
+The exploratory data analysis was conducted to summarize the cleaned dataset and identify preliminary relationships between predictors and IMDb rating outcomes. The original dataset contained 2,387 observations, and the final cleaned dataset used for analysis contained 2,292 observations. This means that 95 observations were removed during data preparation after applying the cleaning rules.
+
+The cleaned dataset contained the main variables used in later analysis, including release year, film length, production budget, number of votes, genre, and IMDb rating. A binary target variable, `high_rating`, was defined according to whether the IMDb score exceeded 7.
+
+## Target Variable Distribution
+
+![](plots/target_distribution.png){width="85%" fig-cap="Distribution of the target variable."}
+
+## Genre Distribution
+
+![](plots/genre_distribution.png){width="85%" fig-cap="Distribution of film genres in the cleaned dataset."}
+
+## Length vs Rating
+
+![](plots/length_vs_rating_scatter.png){width="85%" fig-cap="Relationship between film length and IMDb rating."}
+
+## Budget vs Rating
+
+![](plots/budget_vs_rating.png){width="85%" fig-cap="Relationship between production budget and IMDb rating."}
+
+## Genre vs High Rating
+
+![](plots/genre_vs_rating.png){width="85%" fig-cap="High-rating percentage across film genres."}
+
+## Correlation Heatmap
+
+![](plots/correlation_heatmap.png){width="85%" fig-cap="Correlation heatmap of key variables."}
+
+
+# Methods
+```{r model-data}
+# Prepare the cleaned data for modelling
+film <- df_clean %>%
+  mutate(
+    high_rating = factor(ifelse(high_rating == 1, "Yes", "No")),
+    genre = factor(genre)
+  )
+```{r final-model}
+# Fit the final logistic regression model
+final.model <- glm(
+  high_rating == "Yes" ~ length + length:budget + log(votes) + genre,
+  family = binomial(link = "logit"),
+  data = film
+)
+```
+```{r model-summary}
+# Display the summary of the final model
+summary(final.model)
+```
+
+The modelling stage used Generalised Linear Models (GLMs) with a binomial family and logit link to examine the probability that a film receives a high IMDb rating. In this project, the response variable was `high_rating`, where films with a rating above 7 were coded as “Yes” and the others as “No”.
+
+Several candidate models were fitted and compared by progressively removing or adjusting predictors from the full model. The predictors considered in the modelling process included film length, budget, log-transformed votes, decade, and genre. Based on model comparison, the final model selected was Model 4, which included `length`, the interaction term `length:budget`, `log(votes)`, and `genre`.
+
+# Results
+
+The final selected model was Model 4. According to the model summary, several predictors were statistically significant. Film length had a significant negative coefficient, suggesting that longer films were associated with a lower probability of receiving a high IMDb rating when other variables were held constant. In contrast, log-transformed votes had a significant positive coefficient, indicating that films with more votes were more likely to be highly rated.
+
+Genre also showed important differences in predicted high-rating probability. Compared with the reference genre, Animation, Comedy, Documentary, Drama, and Short had significant effects, while Romance was not statistically significant. In addition, the interaction term between length and budget was significant, suggesting that the relationship between film length and high rating may vary depending on production budget.
+
+The final model had an AIC value of 1244.5, with residual deviance substantially lower than the null deviance, indicating improved model fit compared with the intercept-only model.
+
+## Prediction Probability vs True Value
+
+![](plots/Predictions_vs_True_Value.png){width="85%" fig-cap="Predicted probability of high rating against the observed outcome."}
+
+The prediction plot shows that the fitted model assigned higher predicted probabilities to many films in the high-rating group, suggesting that the model was able to distinguish between the two classes to some extent.
+
+# Conclusion
+
+This report examined the factors associated with receiving a high IMDb rating using exploratory data analysis and Generalised Linear Models. The findings suggest that film length, number of votes, genre, and the interaction between length and budget all played an important role in explaining whether a film was highly rated.
+
+Overall, the analysis shows that highly rated films cannot be explained by a single factor alone. Instead, both film characteristics and audience response contribute to rating outcomes. The results provide a useful summary of the main patterns in the dataset and demonstrate how statistical modelling can be used to investigate film rating behaviour.
