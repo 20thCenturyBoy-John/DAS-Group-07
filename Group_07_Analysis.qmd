@@ -4,7 +4,7 @@ subtitle: "IMDb Film Rating Analysis"
 author: "DAS Group 07"
 format:
   html:
-    output-file: Group_07_qmd.html
+    output-file: Group_07_Analysis_qmd.html
     theme: journal
     toc: true
     toc-depth: 2
