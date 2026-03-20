@@ -5,6 +5,7 @@ author: "DAS Group 07"
 format:
   html:
     output-file: Group_07_Analysis_qmd.html
+    embed-resources: true
     theme: journal
     toc: true
     toc-depth: 2
